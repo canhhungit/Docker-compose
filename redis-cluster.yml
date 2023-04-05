@@ -1,0 +1,25 @@
+version: "3"
+services:  
+  redis-cluster:
+    image: redis:7.0-alpine
+    network_mode: "host"
+    command: "redis-cli --cluster create 10.53.10.60:8379 10.53.10.60:8380 10.53.10.60:8381 --cluster-yes"
+    depends_on:
+      - redis-1
+      - redis-2
+      - redis-3
+  redis-1:
+    image: redis:7.0-alpine
+    restart: always
+    network_mode: "host"
+    command: "redis-server --cluster-enabled yes --port 8379"
+  redis-2:
+    image: redis:7.0-alpine
+    restart: always
+    network_mode: "host"    
+    command: "redis-server --cluster-enabled yes --port 8380"
+  redis-3:
+    image: redis:7.0-alpine
+    restart: always
+    network_mode: "host"
+    command: "redis-server --cluster-enabled yes --port 8381"
