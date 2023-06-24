@@ -1,0 +1,74 @@
+version: '3'
+
+services:
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    restart: "no"
+    ports:
+      - "29092:9000"
+    environment:
+      KAFKA_BROKERCONNECT: "broker-2:9092"
+      JVM_OPTS: "-Xms16M -Xmx48M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
+    depends_on:
+      - "broker-1"
+      - "broker-2"
+      - "broker-3"
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.0.1
+    ports:
+      - "2888:2888"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  broker-1:
+    image: confluentinc/cp-kafka:7.0.1
+    ports:
+      - "9091:9091"
+    depends_on:
+      - zookeeper
+    environment:
+      # KAFKA_BROKER_ID: 1
+      BOOTSTRAP_SERVERS: '10.53.10.60:9091,10.53.10.60:9092,10.53.10.60:9093'
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://10.53.10.60:9091,PLAINTEXT_INTERNAL://broker-1:29091
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+ 
+  broker-2:
+      image: confluentinc/cp-kafka:7.0.1
+      ports:
+        - "9092:9092"
+      depends_on:
+        - zookeeper
+        - "broker-1"
+      environment:
+        # KAFKA_BROKER_ID: 2
+        BOOTSTRAP_SERVERS: '10.53.10.60:9091,10.53.10.60:9092,10.53.10.60:9093'
+        KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+        KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+        KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://10.53.10.60:9092,PLAINTEXT_INTERNAL://broker-2:29092
+        KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+        KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+        KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+   
+  broker-3:
+      image: confluentinc/cp-kafka:7.0.1
+      ports:
+        - "9093:9093"
+      depends_on:
+        - zookeeper
+        - "broker-1"
+        - "broker-2"
+      environment:
+        # KAFKA_BROKER_ID: 3
+        BOOTSTRAP_SERVERS: '10.53.10.60:9091,10.53.10.60:9092,10.53.10.60:9093'
+        KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+        KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+        KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://10.53.10.60:9093,PLAINTEXT_INTERNAL://broker-3:29093
+        KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+        KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+        KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
