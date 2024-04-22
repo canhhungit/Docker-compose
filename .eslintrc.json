@@ -1,0 +1,40 @@
+{
+  "env": {
+    "browser": false,
+    "es2021": true
+  },
+  "extends": ["eslint:recommended"],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "rules": {
+    //Không sử dụng console.log
+    "no-console": "warn",
+    //Không sử dụng debugger
+    "no-undef": "off",
+    //Sử dụng 2 dấu cách để thụt đầu dòng
+    "indent": [2, 2, { "SwitchCase": 1 }],
+    //Sử dụng dấu nháy đơn
+    "quotes": [2, "single"],
+    //Sử dụng dấu chấm phẩy
+    "semi": [2, "always"],
+    //Sử dụng camelCase
+    "camelcase": [
+      2,
+      {
+        "properties": "always"
+      }
+    ],
+    "eqeqeq": [2, "smart"],
+    //Không sử dụng var
+    "one-var-declaration-per-line": [2, "always"],
+    "new-cap": 2,
+    "no-case-declarations": 0,
+    "no-eval": 2,
+    "no-var": 2,
+    "no-return-assign": 2,
+    "no-param-reassign": 2,
+    "array-callback-return": 2
+  }
+}
