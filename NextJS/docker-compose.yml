@@ -1,0 +1,7 @@
+version: '3.9'
+services:
+  base:
+    container_name: ppv
+    build: .
+    ports:
+      - '3008:3000'
